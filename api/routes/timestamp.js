@@ -12,25 +12,29 @@ router.get('/', function(req, res, next) {
 router.get('/:date?', function(req, res, next) {
   let date = req.params.date;
   var unix_time = new Date(date).getTime();
-
-  if (isNaN(unix_time)) {
-    console.log(`is unix NaN? ${isNaN(unix_time)}`);
-    res.status(500);
-    res.send({"error": "Invalid Date"});
-    return;
-  } else if (date.match(/-/)) {
-    console.log('match!');
+  var utc_time = new Date(date * 1000);
+  
+  // console.log(`unix_time: ${unix_time}`);
+  console.log(`date: ${date}, unix_time: ${unix_time}, utc_time: ${utc_time}`);
+  
+  if (date.match(/-/)) {
+    // *** input is UTC
     res.send({"unix": unix_time, "utc": date});
   }
 
-  let test = new Date(date * 1000);
-  console.log(req.params.date);
-  console.log(typeof(test));
-  
-  console.log('homie');
-  console.log();
-  // add checker whether req is unix or utc
-  var utc_time = Date();
+
+
+  // if (isNaN(unix_time)) {
+  //   // *** input is 
+  //   res.status(500);
+  //   res.send({"error": "Invalid Date"});
+  //   return;
+  // } else if (date.match(/-/)) {
+  //   // console.log('match!');
+  //   res.send({"unix": unix_time, "utc": date});
+  // } else {
+  //   console.log(`date: ${date}, ${utc_time}`);
+  // }
   // var unix_time = Date.now();
   // res.send({"unix": unix_time, "utc": utc_time});
 });

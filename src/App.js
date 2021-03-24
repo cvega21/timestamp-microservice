@@ -11,22 +11,43 @@ const App = () => {
   const [unix, setUnix] = useState("");
   const [inputIsInvalid, setInputIsInvalid] = useState(false);
   const [answerDidFetch, setAnswerDidFetch] = useState(false);
-
+  
   useEffect(() => {
+    let utcIsValid = true;
+    let unixIsValid = true;
+    let validChars = /^[0-9 -]+$/g;
+    
     if (unix && utc && !answerDidFetch) {
+      setInputIsInvalid(true);
+      return;
+    }
+
+    if (utc && !validChars.test(utc)) {
+      setInputIsInvalid(true);
+    } else if ((unix && !validChars.test(unix))) {
       setInputIsInvalid(true);
     } else {
       setInputIsInvalid(false);
     }
-  }, [unix,utc])
+
+    if (utc) {
+      console.log(utc);
+      console.log(Date.parse(utc));
+    } else if (unix) {
+      console.log(unix);
+    }
+
+
+  }, [unix, utc, answerDidFetch])
   
   const getTime = () => {
     let timeParam = "";
     let apiTimestamp = "http://localhost:9000/api/timestamp";
     
     if (unix && utc) {
-      alert('please select one type of date');
-      return
+      alert('please select only one type of date');
+      handleClear();
+      return;
     } else if (utc) {
       timeParam = utc;
       apiTimestamp = path.join(apiTimestamp,timeParam);
@@ -38,16 +59,17 @@ const App = () => {
     }
     
     console.log(apiTimestamp);
-
+    
     fetch(`http://localhost:9000/api/timestamp/${timeParam}`)
     .then(r => r.text())
     .then(response => {
+      console.log('last part of fetch')
       let jsonResponse = JSON.parse(response);
       console.log(`${jsonResponse}`);
       console.log(`${jsonResponse.error}`);
       if (jsonResponse.error) {
-        setInputIsInvalid(true);
-        console.log('ERRORRRRR!!!!!')
+        alert('invalid date');
+        handleClear();
         return  
       }
       console.log(`${typeof(jsonResponse)}, ${jsonResponse}`);
@@ -57,30 +79,42 @@ const App = () => {
       setAnswerDidFetch(true);
     });
   }
-
+  
   const handleChange = e => {    
-    if (e.target.value.length === 10 && inputIsInvalid) {
-      console.log('hit')
-    } 
-
+    let keyPressed = e.nativeEvent.data;    
+    let currentInput = e.target.value;
+    
     if (answerDidFetch) {
-      setAnswerDidFetch(false);
+      handleClear();
       if(e.target.className === "UnixInput") {
-        setUnix(e.nativeEvent.data);
+        setUnix(keyPressed)
+        return;
       } else {
-        console.log(e.nativeEvent.data);
-        setUTC('here');
+        setUTC(keyPressed)
+        return;
       };
-      console.log(e.nativeEvent.data);
+    }
+    
+    if (e.target.value.length > 10 && e.target.className === "UTCInput") {
+      return;
+    } else if (e.target.value.length > 13 && e.target.className === "UnixInput") {
+      return;
     }
     
     if (e.target.className === "UnixInput") {
-      console.log('2')
       setUnix(e.target.value)
     } else {
-      console.log('2')
       setUTC(e.target.value)
     }
+
+    // if (!validChars.test(utc)) {
+    //   console.log('aaaaaaa');
+    //   setInputIsInvalid(true);
+    // } else {
+    //   setInputIsInvalid(false);
+    // }
+    
+    
   }
 
   const handleClear = () => {

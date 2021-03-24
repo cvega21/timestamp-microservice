@@ -12,6 +12,7 @@
 .mainContainer {
   width: 70vw;
   height: 60vh;
+  max-height: 500px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
