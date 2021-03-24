@@ -40,6 +40,41 @@ const App = () => {
 
   }, [unix, utc, answerDidFetch])
   
+  const handleChange = e => {    
+    let keyPressed = e.nativeEvent.data;    
+    let currentInput = e.target.value;
+    
+    if (answerDidFetch) {
+      handleClear();
+      if(e.target.className === "UnixInput") {
+        setUnix(keyPressed)
+        return;
+      } else {
+        setUTC(keyPressed)
+        return;
+      };
+    }
+    
+    if (e.target.value.length > 10 && e.target.className === "UTCInput") {
+      return;
+    } else if (e.target.value.length > 13 && e.target.className === "UnixInput") {
+      return;
+    }
+    
+    if (e.target.className === "UnixInput") {
+      setUnix(e.target.value)
+    } else {
+      setUTC(e.target.value)
+    }
+  }
+
+  const handleClear = () => {
+    setUTC("");
+    setUnix("");
+    setInputIsInvalid(false);
+    setAnswerDidFetch(false);
+  }
+  
   const getTime = () => {
     let timeParam = "";
     let apiTimestamp = "http://localhost:9000/api/timestamp";
@@ -80,50 +115,6 @@ const App = () => {
     });
   }
   
-  const handleChange = e => {    
-    let keyPressed = e.nativeEvent.data;    
-    let currentInput = e.target.value;
-    
-    if (answerDidFetch) {
-      handleClear();
-      if(e.target.className === "UnixInput") {
-        setUnix(keyPressed)
-        return;
-      } else {
-        setUTC(keyPressed)
-        return;
-      };
-    }
-    
-    if (e.target.value.length > 10 && e.target.className === "UTCInput") {
-      return;
-    } else if (e.target.value.length > 13 && e.target.className === "UnixInput") {
-      return;
-    }
-    
-    if (e.target.className === "UnixInput") {
-      setUnix(e.target.value)
-    } else {
-      setUTC(e.target.value)
-    }
-
-    // if (!validChars.test(utc)) {
-    //   console.log('aaaaaaa');
-    //   setInputIsInvalid(true);
-    // } else {
-    //   setInputIsInvalid(false);
-    // }
-    
-    
-  }
-
-  const handleClear = () => {
-    setUTC("");
-    setUnix("");
-    setInputIsInvalid(false);
-    setAnswerDidFetch(false);
-  }
-
   return (
     <div className="App">
       <div className="mainContainer">
