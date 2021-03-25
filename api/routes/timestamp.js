@@ -1,7 +1,6 @@
 var express = require('express');
 var router = express.Router();
 
-/* GET users listing. */
 router.get('/', function(req, res, next) {
   console.log('root');
   var utc_time = Date();
@@ -20,6 +19,9 @@ router.get('/:date?', function(req, res, next) {
   if (date.match(/-/)) {
     // *** input is UTC
     res.send({"unix": unix_time, "utc": date});
+  } else if (utc_time) {
+    utc_time = utc_time.toISOString().split('T')[0];
+    res.send({"unix": date, "utc": utc_time});
   }
 
 

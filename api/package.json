@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon ./bin/www"
+    "start": "nodemon ./bin/www",
+    "build": "cd .. && yarn build && cp -R build/ api/public/ && mv api/public/index.html api/public/app.html"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
@@ -14,5 +15,8 @@
     "jade": "~1.11.0",
     "morgan": "~1.9.1",
     "nodemon": "^2.0.7"
+  }, 
+  "engines": {
+    "node": "12.x"
   }
 }
